@@ -41,7 +41,18 @@
           ((str:starts-with-p "walk" query :ignore-case t)
            (let ((place (first (str:split "walk " query :omit-nulls t))))
              (format t "You attempt to walk into building ~A.~%" place)
-             (cellar-door.world:walk (parse-integer place :junk-allowed t))))
+             (let ((tmp (cellar-door.world:walk (parse-integer place :junk-allowed t))))
+               (cond
+                 ((eq tmp :spell)
+                  (format t "You found a spell!~%"))
+
+                 ((eq tmp :upgrade)
+                  (format t "~A!~%" (cellar-door.upgrades:main db)))
+
+                 ((eq tmp :monster)
+                  (format t "You encountered a monster!~%"))
+
+                 (t (format t "The room is empty!~%"))))))
 
           ((str:starts-with-p "SELECT" query :ignore-case t)
            (format t "~A~%" (cellar-door.db:sql-query db query)))

@@ -5,13 +5,14 @@
            #:walk))
 (in-package :cellar-door.world)
 
+(defparameter *start-node* nil)
 (defparameter *max-label-length* 50)
 (defparameter *city-nodes* nil)
 (defparameter *city-edges* nil)
 (defparameter *player-pos* nil)
 (defparameter *visited-nodes* nil)
 (defparameter *node-num* 30)
-(defparameter *edge-num* 45)
+(defparameter *edge-num* 60)
 
 (defun dot-name (exp)
   (substitute-if #\_ (complement #'alphanumericp) (prin1-to-string exp)))
@@ -138,11 +139,13 @@
                           (remove-duplicates (direct-edges node1 edge-list) :test #'equal))))
           (remove-duplicates (mapcar #'car edge-list))))
 
-(defun make-city-nodes ()
-  ; Random encounters need to be created here
-  (loop for n from 1 to *node-num*
+(defun make-city-nodes (&optional (pos -1))
+    (loop for n from 1 to *node-num*
           collect (append (list n)
                           (cond
+                            ((= n pos)
+                             '(exit))
+                           
                             ((= (random 4) 0)
                              '(upgrade))
 
@@ -187,8 +190,8 @@
 
 (defun new-world ()
   (setf *city-edges* (make-city-edges))
-  (setf *city-nodes* (make-city-nodes))
   (setf *player-pos* (find-empty-node))
+  (setf *city-nodes* (make-city-nodes *player-pos*))
   (setf *visited-nodes* (list *player-pos*)))
 
 (defun walk (pos)
@@ -203,15 +206,14 @@
     (setf *player-pos* pos)
     (draw-known-city)
 
-    ; Check random encounters here
     (cond
       ((member 'spell node)
-       (format t "You found a new spell!~%"))
+       :spell)
 
       ((member 'upgrade node)
-       (format t "You found an upgrade!~%"))
+       :upgrade)
 
       ((member 'monster node)
-       (format t "You encountered a monster!~%"))
+       :monster)
 
-      (t (format t "The building is empty.~%")))))
+      (t :empty))))

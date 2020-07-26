@@ -33,7 +33,3 @@
   (let ((s1 (replace-str-at-points s (find-boundries s))))
     (with-input-from-string (s2 s1)
       (read s2))))
-
-; Tests
-(build-escaped-args "(1, \"this is, a test\", 3)")
-(build-escaped-values "(1, \"this is, a test\", 3)")

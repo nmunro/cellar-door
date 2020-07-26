@@ -29,8 +29,8 @@
   (execute-non-query db "INSERT INTO elements (name) VALUES (?)" "ice"))
 
 (defun init-player (db player-name)
-  (execute-non-query db "CREATE TABLE player (name TEXT NOT NULL, hp INTEGER NOT NULL, hp_lvl INTEGER NOT NULL, atk INTEGER NOT NULL, atk_lvl INTEGER NOT NULL, def INTEGER NOT NULL, def_lvl INTEGER NOT NULL)")
-  (execute-non-query db "INSERT INTO player (name, hp, hp_lvl, atk, atk_lvl, def, def_lvl) VALUES (?, ?, ?, ?, ?, ?, ?)" player-name 100 1 10 1 10 1))
+  (execute-non-query db "CREATE TABLE player (name TEXT NOT NULL, hp INTEGER NOT NULL, hp_lvl INTEGER NOT NULL, hp_scaling INTEGER NOT NULL, atk INTEGER NOT NULL, atk_lvl INTEGER NOT NULL, atk_scaling INTEGER NOT NULL, def INTEGER NOT NULL, def_lvl INTEGER NOT NULL, def_scaling INTEGER NOT NULL)")
+  (execute-non-query db "INSERT INTO player (name, hp, hp_lvl, hp_scaling, atk, atk_lvl, atk_scaling, def, def_lvl, def_scaling) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" player-name 100 1 0 10 1 0 10 1 0))
 
 (defun init-spells (db)
   (execute-non-query db "CREATE TABLE spells (id INTEGER NOT NULL, name TEXT NOT NULL, description TEXT NOT NULL, dmg INTEGER NOT NULL, element INTEGER NOT NULL, PRIMARY KEY(id AUTOINCREMENT), FOREIGN KEY(element) REFERENCES elements(id))")
