@@ -21,7 +21,7 @@
 
     (do () (nil)
       (when (game-over-p db)
-        (return-from main (format t "You died!")))
+        (return-from main (format t "~c[31mYou died!~c[0m" #\ESC #\ESC)))
 
       (format t "::> ")
       (force-output)
@@ -42,11 +42,12 @@
 
           ((str:starts-with-p "walk" query :ignore-case t)
            (let ((place (first (str:split "walk " query :omit-nulls t))))
-             (format t "You attempt to walk into building ~A.~%" place)
+             (format t "You attempt to walk into room ~A.~%" place)
+
              (let ((tmp (cellar-door.world:walk (parse-integer place :junk-allowed t))))
                (cond
                  ((eq tmp :spell)
-                  (format t "You found a spell!~%"))
+                  (format t "~A!~%" (cellar-door.spells:main db)))
 
                  ((eq tmp :upgrade)
                   (format t "~A!~%" (cellar-door.upgrades:main db)))

@@ -6,9 +6,12 @@
   :components ((:module "src"
                 :components
                 ((:file "utils")
+                 (:file "elements")
+                 (:file "spells")
+                 (:file "player")
+                 (:file "upgrades")
                  (:file "init")
                  (:file "intro")
-                 (:file "upgrades")
                  (:file "world")
                  (:file "help")
                  (:file "main"))))
