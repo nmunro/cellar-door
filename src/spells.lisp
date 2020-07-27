@@ -4,10 +4,6 @@
            #:init))
 (in-package :cellar-door.spells)
 
-(defun pick-random-element (db)
-  (declare (ignore db))
-  nil)
-
 (defun init (db)
   (execute-non-query db "CREATE TABLE spells (id INTEGER NOT NULL, name TEXT NOT NULL, description TEXT NOT NULL, dmg INTEGER NOT NULL, element INTEGER NOT NULL, PRIMARY KEY(id AUTOINCREMENT), FOREIGN KEY(element) REFERENCES elements(id))")
   (execute-non-query db "INSERT INTO spells (name, description, dmg, element) VALUES (?, ?, ?, ?)" "Splash" "You conjour about a flasks worth of water and toss it at a target" 10 2)
@@ -16,5 +12,4 @@
 
 (defun main (db)
   "Randomly generate a spell"
-  (declare (ignore db))
-  (format nil "You found a spell"))
+  (format nil "You found a ~A spell" (cellar-door.elements:random-element db)))
