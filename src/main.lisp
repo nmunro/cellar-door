@@ -32,7 +32,9 @@
            (cellar-door.help:main))
 
           ((string= (string-downcase query) "quit")
-           (return-from main (format t "Oh, ok, bye!~%")))
+           (let ((answer (yes-or-no-p "Are you sure you want to quit?")))
+             (when answer
+               (return-from main (format t "Oh, ok, bye!~%")))))
 
           ((string= (string-downcase query) "map")
            (cellar-door.world:draw-known-city)
