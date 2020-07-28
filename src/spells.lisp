@@ -12,4 +12,4 @@
 
 (defun main (db)
   "Randomly generate a spell"
-  (format nil "You found a ~A spell" (cellar-door.elements:random-element db)))
+  (format nil "You found a level ~A, ~A spell" 1 (cellar-door.elements:random-element db)))

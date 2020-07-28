@@ -15,7 +15,3 @@
   (execute-non-query db "INSERT INTO elements (name, strong, weak) VALUES (?, ?, ?)" "black" 5 1)
   (execute-non-query db "INSERT INTO elements (name, strong, weak) VALUES (?, ?, ?)" "red" 1 2)
   (execute-non-query db "INSERT INTO elements (name, strong, weak) VALUES (?, ?, ?)" "green" 2 3))
-
-(defun main (db)
-  ; Populate database table
-  nil)

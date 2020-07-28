@@ -4,6 +4,9 @@
            #:init))
 (in-package :cellar-door.upgrades)
 
+(defun random-upgrade (db)
+  (execute-single db "SELECT name FROM upgrade_types ORDER BY RANDOM() LIMIT 1"))
+
 (defun init (db)
   (execute-non-query db "CREATE TABLE upgrade_types (id INTEGER NOT NULL, name INTEGER NOT NULL, PRIMARY KEY(id AUTOINCREMENT))")
   (execute-non-query db "CREATE TABLE upgrade_scaling (id INTEGER NOT NULL, lower INTEGER NOT NULL, upper INTEGER NOT NULL, PRIMARY KEY(id AUTOINCREMENT))")
@@ -21,22 +24,10 @@
                    (6.81 18.48) (6.83 19.18) (6.84 19.88) (6.85 20.57) (6.86 21.27)))
     (execute-non-query db  "INSERT INTO upgrade_scaling (lower, upper) VALUES (?, ?)" (first range) (second range))))
 
-(defun pick-stat ()
-  (let ((rnd (random 3)))
-    (cond
-     ((= 0 rnd)
-       'hp)
-
-      ((= 1 rnd)
-       'atk)
-
-      ((= 2 rnd)
-       'def))))
-
 (defun main (db)
   "Randomly generate an upgrade"
   ;; Get the player hp, atk or def level and generate a random new level
-  (let* ((stat     (pick-stat))
+  (let* ((stat     (random-upgrade db))
          (stat_lvl (1+     (execute-single db (format nil "SELECT ~A_lvl FROM player" stat))))
          (lvl      (first  (execute-to-list db "SELECT lower, upper FROM upgrade_scaling WHERE id = ?" stat_lvl)))
          (upper    (first  lvl))
