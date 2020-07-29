@@ -80,25 +80,26 @@
 (defun random-noun (db)
   (execute-single db "SELECT name FROM spell_nouns ORDER BY RANDOM() LIMIT 1"))
 
+(defun random-name (db)
+  (format nil "~A ~A" (random-adjective db) (random-noun db)))
+
+(defun populate (db tbl items)
+  (dolist (item items)
+    (execute-non-query db (format nil "INSERT INTO ~A (name) VALUES (?)" tbl) item)))
+
 (defun init (db)
   (execute-non-query db "CREATE TABLE spell_adjectives (id INTEGER NOT NULL, name TEXT NOT NULL, PRIMARY KEY(id AUTOINCREMENT))")
-  (dolist (adjective adjectives)
-    (execute-non-query db "INSERT INTO spell_adjectives (name) VALUES (?)" adjective))
-
   (execute-non-query db "CREATE TABLE spell_nouns (id INTEGER NOT NULL, name TEXT NOT NULL, PRIMARY KEY(id AUTOINCREMENT))")
-  (dolist (noun nouns)
-    (execute-non-query db "INSERT INTO spell_nouns (name) VALUES (?)" noun))
 
-  (execute-non-query db "CREATE TABLE spells (id INTEGER NOT NULL, name TEXT NOT NULL, description TEXT NOT NULL, dmg INTEGER NOT NULL, element INTEGER NOT NULL, PRIMARY KEY(id AUTOINCREMENT), FOREIGN KEY(element) REFERENCES elements(id))")
-  (execute-non-query db "INSERT INTO spells (name, description, dmg, element) VALUES (?, ?, ?, ?)" "Splash" "You conjour about a flasks worth of water and toss it at a target" 10 2)
-  (execute-non-query db "INSERT INTO spells (name, description, dmg, element) VALUES (?, ?, ?, ?)" "Ice Dagger" "You conjour a razor sharp shared of ice and throw it at a target" 10 3)
-  (execute-non-query db "INSERT INTO spells (name, description, dmg, element) VALUES (?, ?, ?, ?)" "Fireball" "You conjour a ball of flame and aim it at a target" 10 1))
+  (populate db "spell_adjectives" adjectives)
+  (populate db "spell_nouns" nouns)
 
-(defun generate-name (db)
-  (format nil "~A ~A" (random-adjective db) (random-noun db)))
+  (execute-non-query db "CREATE TABLE spells (id INTEGER NOT NULL, name TEXT NOT NULL, dmg INTEGER NOT NULL, element INTEGER NOT NULL, PRIMARY KEY(id AUTOINCREMENT), FOREIGN KEY(element) REFERENCES elements(id))")
+  (execute-non-query db "INSERT INTO spells (name, dmg, element) VALUES (?, ?, ?)" (random-name db) 10 (cellar-door.elements:random-element db))
+  (execute-non-query db "INSERT INTO spells (name, dmg, element) VALUES (?, ?, ?)" (random-name db) 10 (cellar-door.elements:random-element db)))
 
 (defun main (db)
   "Randomly generate a spell"
-  (let ((name (generate-name db))
+  (let ((name    (random-name db))
         (element (cellar-door.elements:random-element db)))
     (format nil "You found \"~A\"; a level ~A, ~A spell" name 1 element)))
