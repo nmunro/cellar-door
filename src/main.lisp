@@ -58,7 +58,11 @@
                  (t (format t "The room is empty!~%"))))))
 
           ((str:starts-with-p "SELECT" query :ignore-case t)
-           (format t "~A~%" (cellar-door.db:sql-query db query)))
+           (let ((results (cellar-door.db:sql-query db query)))
+             (if (listp results)
+                (dolist (result results)
+                  (format t "~A~%" result))
+                (format t "~A~%" results))))
 
           ((str:starts-with-p "UPDATE" query :ignore-case t)
             (cellar-door.db:sql-query db query))
