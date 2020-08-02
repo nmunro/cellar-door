@@ -8,6 +8,7 @@
                 ((:file "utils")
                  (:file "elements")
                  (:file "spells")
+                 (:file "enemies")
                  (:file "player")
                  (:file "upgrades")
                  (:file "init")

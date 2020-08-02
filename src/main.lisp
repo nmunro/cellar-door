@@ -53,7 +53,7 @@
                   (format t "~A!~%" (cellar-door.upgrades:main db)))
 
                  ((eq tmp :monster)
-                  (format t "You encountered a monster!~%"))
+                  (format t "~A!~%" (cellar-door.enemies:random-enemy db)))
 
                  (t (format t "The room is empty!~%"))))))
 
